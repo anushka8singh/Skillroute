@@ -1,26 +1,23 @@
-const LearningPath = require('../models/LearningPath');
+const LearningPath = require("../models/LearningPath");
 
-// @desc    Get all learning paths
-// @route   GET /api/paths
-// @access  Public
-exports.getPaths = async (req, res) => {
+const createLearningPath = async (req, res) => {
   try {
-    const paths = await LearningPath.find();
-    res.json(paths);
+    const { goal } = req.body;
+
+    const newPath = new LearningPath({
+      goal,
+      steps: []
+    });
+
+    const savedPath = await newPath.save();
+
+    res.status(201).json(savedPath);
+
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// @desc    Create a learning path
-// @route   POST /api/paths
-// @access  Public
-exports.createPath = async (req, res) => {
-  try {
-    const path = new LearningPath(req.body);
-    const saved = await path.save();
-    res.status(201).json(saved);
-  } catch (error) {
-    res.status(400).json({ message: 'Bad Request' });
-  }
+module.exports = {
+  createLearningPath
 };

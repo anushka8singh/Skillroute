@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { getPaths, createPath } = require('../controllers/pathController');
 
-router.get('/', getPaths);
-router.post('/', createPath);
+const { createLearningPath } = require("../controllers/pathController");
+
+router.post("/path", createLearningPath);
 
 module.exports = router;
