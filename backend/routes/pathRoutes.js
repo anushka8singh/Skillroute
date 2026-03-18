@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const protect = require("../middleware/authMiddleware");
+
 const {
   createLearningPath,
   getLearningPaths,
@@ -8,12 +10,10 @@ const {
   deletePath
 } = require("../controllers/pathController");
 
-router.post("/path", createLearningPath);
-
-router.get("/path", getLearningPaths);
-
-router.patch("/step/:pathId/:stepIndex", completeStep);
-
-router.delete("/path/:id", deletePath);
+// 🔐 Protected routes
+router.post("/path", protect, createLearningPath);
+router.get("/path", protect, getLearningPaths);
+router.patch("/step/:pathId/:stepIndex", protect, completeStep);
+router.delete("/path/:id", protect, deletePath);
 
 module.exports = router;
