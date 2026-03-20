@@ -6,6 +6,16 @@ const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -17,15 +27,19 @@ const signup = async (req, res) => {
     await user.save();
 
     res.status(201).json({ message: "User created successfully" });
-
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Signup error:", error.message);
+    res.status(500).json({ error: "Signup failed" });
   }
 };
 
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
 
     const user = await User.findOne({ email });
 
@@ -46,9 +60,9 @@ const login = async (req, res) => {
     );
 
     res.json({ token });
-
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Login error:", error.message);
+    res.status(500).json({ error: "Login failed" });
   }
 };
 

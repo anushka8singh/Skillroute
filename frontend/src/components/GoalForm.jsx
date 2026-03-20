@@ -3,41 +3,43 @@ import { useState } from "react";
 function GoalForm({ onCreatePath, loading }) {
   const [goal, setGoal] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    if (!goal.trim()) {
+    const trimmedGoal = goal.trim();
+
+    if (!trimmedGoal) {
       alert("Please enter a learning goal");
       return;
     }
 
-    onCreatePath(goal);
+    await onCreatePath(trimmedGoal);
     setGoal("");
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "24px" }}>
-      <h2>Create a Learning Path</h2>
+    <section className="goal-form-panel">
+      <div className="goal-form-copy">
+        <span className="eyebrow">Create Learning Path</span>
+        <h2>What do you want to learn next?</h2>
+        <p>Describe your goal and SkillRoute will generate a clear roadmap for you.</p>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Enter your goal (e.g. Learn React)"
-        value={goal}
-        onChange={(e) => setGoal(e.target.value)}
-        style={{
-          width: "100%",
-          maxWidth: "500px",
-          padding: "10px",
-          marginBottom: "12px"
-        }}
-      />
+      <form className="goal-form" onSubmit={handleSubmit}>
+        <input
+          className="goal-input"
+          type="text"
+          placeholder="Enter your goal, for example: Learn React from scratch"
+          value={goal}
+          onChange={(event) => setGoal(event.target.value)}
+          disabled={loading}
+        />
 
-      <br />
-
-      <button type="submit" disabled={loading}>
-        {loading ? "Generating..." : "Generate Path"}
-      </button>
-    </form>
+        <button className="primary-button" type="submit" disabled={loading}>
+          {loading ? "Generating..." : "Generate"}
+        </button>
+      </form>
+    </section>
   );
 }
 

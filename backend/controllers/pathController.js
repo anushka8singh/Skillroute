@@ -95,26 +95,34 @@ const completeStep = async (req, res) => {
     const { pathId, stepIndex } = req.params;
     const userId = req.user.userId;
 
-    const path = await LearningPath.findOne({ _id: pathId, user: userId });
+    // Find only user's own path
+    const path = await LearningPath.findOne({
+      _id: pathId,
+      user: userId
+    });
 
     if (!path) {
       return res.status(404).json({ error: "Learning path not found" });
     }
 
+    // Check if step exists
     if (!path.steps[stepIndex]) {
       return res.status(404).json({ error: "Step not found" });
     }
 
+    // ✅ Mark step as completed
     path.steps[stepIndex].completed = true;
+
+    // Save changes
     await path.save();
 
     res.json(path);
+
   } catch (error) {
     console.error("Complete Step Error:", error.message);
     res.status(500).json({ error: "Failed to update step" });
   }
 };
-
 /* -----------------------------
 Delete Learning Path for Logged-in User
 ----------------------------- */
