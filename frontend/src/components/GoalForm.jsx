@@ -1,11 +1,13 @@
 import { useState } from "react";
 
 function GoalForm({ onCreatePath, loading }) {
+  // Keep the input controlled so React always knows the latest goal text.
   const [goal, setGoal] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Trim spaces so accidental whitespace does not create an empty goal.
     const trimmedGoal = goal.trim();
 
     if (!trimmedGoal) {
@@ -13,7 +15,9 @@ function GoalForm({ onCreatePath, loading }) {
       return;
     }
 
+    // Pass the cleaned goal to Dashboard, which sends it to the backend.
     await onCreatePath(trimmedGoal);
+    // Clear the input after a successful create so the form is ready for the next goal.
     setGoal("");
   };
 
